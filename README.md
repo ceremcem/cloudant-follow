@@ -79,7 +79,7 @@ All of the CouchDB _changes options are allowed. See http://guide.couchdb.org/dr
 * `db` | Fully-qualified URL of a couch database. (Basic auth URLs are ok.)
 * `since` | The sequence number to start from. Use `"now"` to start from the latest change in the DB.
 * `heartbeat` | Milliseconds within which CouchDB must respond (default: **30000** or 30 seconds)
-* `feed` | **Optional but only "continuous" is allowed**
+* `feed` | Type "continuous" _(default)_, "longpoll" and "normal" feeds are supported.
 * `filter` |
   * **Either** a path to design document filter, e.g. `app/important`
   * **Or** a Javascript `function(doc, req) { ... }` which should return true or false
@@ -97,6 +97,8 @@ Besides the CouchDB options, more are available:
 
 The main API is a thin wrapper around the EventEmitter API.
 
+<a name="continuous"></a>
+### A _continuous_ Feed
 ```javascript
 var follow = require('cloudant-follow');
 
@@ -126,6 +128,29 @@ feed.on('error', function(er) {
   console.error('Since Follow always retries on errors, this must be serious');
   throw er;
 })
+
+feed.follow();
+```
+
+<a name="normal"></a>
+### A _normal_ Feed
+```javascript
+var feed = new follow.Feed();
+
+feed.db = 'http://localhost:5984/animaldb';
+feed.feed = 'normal';
+
+feed.on('change', function(change) {
+  console.log(`got change for doc ${change.id} (seq: ${change.seq})`);
+});
+
+feed.on('last_seq', function(seq) {
+  console.log(`last seq is ${seq}`);
+});
+
+feed.on('error', function(er) {
+  throw er;
+});
 
 feed.follow();
 ```
@@ -168,6 +193,7 @@ Once you've got one, you can subscribe to these events:
 * **confirm** | `function(db_obj)` | The database is confirmed; passed the couch database object
 * **change** | `function(change)` | A change occured; passed the change object from CouchDB
 * **catchup** | `function(seq_id)` | The feed has caught up to the *update_seq* from the confirm step. Assuming no subsequent changes, you have seen all the data.
+* **last_seq** | The `last_seq` value sent by the server (only when using a "normal" feed).
 * **wait** | Follow is idle, waiting for the next data chunk from CouchDB
 * **timeout** | `function(info)` | Follow did not receive a heartbeat from couch in time. The passed object has `.elapsed_ms` set to the elapsed time
 * **retry** | `function(info)` | A retry is scheduled (usually after a timeout or disconnection). The passed object has
