@@ -22,10 +22,11 @@ var tap = require('tap')
   , request = require('request')
 
 var follow = require('../api')
-  , DB = process.env.db || 'http://localhost:5984/follow_test'
-  , DB_UPDATES = process.env.db_updates || 'http://localhost:5984/_db_updates'
-  , RTT = null
 
+var SERVER = process.env.server || 'http://localhost:5984'
+var DB = process.env.db || `${SERVER}/follow_test`
+var DB_UPDATES = process.env.db_updates || `${SERVER}/_db_updates`
+var RTT = null
 
 module.exports = { 'DB': DB
                  , 'DB_UPDATES': DB_UPDATES
