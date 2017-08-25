@@ -1,5 +1,5 @@
 {
-  "name": "cloudant-follow",
+  "name": "@cloudant/cloudant-follow",
   "version": "0.13.0-SNAPSHOT",
   "author": {
     "name": "IBM Cloudant",
