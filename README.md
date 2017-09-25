@@ -81,7 +81,7 @@ All of the CouchDB _changes options are allowed. See http://guide.couchdb.org/dr
 * `heartbeat` | Milliseconds within which CouchDB must respond (default: **30000** or 30 seconds)
 * `feed` | **Optional but only "continuous" is allowed**
 * `filter` |
-  * **Either** a path to design document filter, e.g. `app/important`
+  * **Either** a path to [design document filter](http://docs.couchdb.org/en/latest/ddocs/ddocs.html#filter-functions), e.g. `app/important`
   * **Or** a Javascript `function(doc, req) { ... }` which should return true or false
 * `query_params` | **Optional** for use in with `filter` functions, passed as `req.query` to the filter function
 
